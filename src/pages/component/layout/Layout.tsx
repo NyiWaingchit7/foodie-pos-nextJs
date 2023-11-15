@@ -1,0 +1,34 @@
+import { Box } from "@mui/material";
+import { useRouter } from "next/router";
+import OrderLayout from "./OrderLayout";
+import BackOfficeLayout from "./BackOfficeLayout";
+
+interface Props {
+  children: string | JSX.Element | JSX.Element[];
+}
+
+const Layout = ({ children }: Props) => {
+  const router = useRouter();
+  const { tableId } = router.query;
+  const isOrderApp = tableId;
+  const isBackofficeApp = router.pathname.includes("/backoffice");
+  if (isOrderApp) {
+    return (
+      <Box sx={{ height: "100%" }}>
+        <OrderLayout>{children}</OrderLayout>
+      </Box>
+    );
+  }
+
+  if (isBackofficeApp) {
+    return (
+      <Box sx={{ height: "100%" }}>
+        <BackOfficeLayout>{children}</BackOfficeLayout>
+      </Box>
+    );
+  }
+
+  return <Box>{children}</Box>;
+};
+
+export default Layout;
