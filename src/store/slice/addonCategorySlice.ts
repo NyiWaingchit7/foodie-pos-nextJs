@@ -94,7 +94,7 @@ const addonCategorySlice = createSlice({
       store.items = action.payload;
     },
     addAddonCategory: (state, action) => {
-      state.items = [...state.items, action.payload];
+      state.items = [...state.items, ...action.payload];
     },
     replaceAddonCategory: (state, action) => {
       state.items = state.items.map((i) =>

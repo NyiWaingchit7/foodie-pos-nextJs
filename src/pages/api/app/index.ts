@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { prisma } from "@/utils/db";
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -25,7 +24,7 @@ export default async function handler(
       let menuCategories = await prisma.menuCategory.findMany({
         where: { companyId: Number(companyId), isArchived: false },
       });
-      console.log(menuCategories);
+
       const menuCategoryIds = menuCategories.map((item) => item.id);
       const disabledMenuCategoryIds = (
         await prisma.disabledLocationMenuCategory.findMany({
@@ -69,7 +68,12 @@ export default async function handler(
           isArchived: false,
         },
       });
-
+      const tableIds = (
+        await prisma.table.findMany({ where: { locationId: location?.id } })
+      ).map((item) => item.id);
+      const orders = await prisma.order.findMany({
+        where: { tableId: { in: tableIds } },
+      });
       return res.status(200).json({
         locations: [],
         menuCategories,
@@ -81,6 +85,7 @@ export default async function handler(
         tables: [],
         disabledLocationMenuCategories: [],
         disabledLocationMenus: [],
+        orders,
       });
     } else {
       const session = await getServerSession(req, res, authOptions);
@@ -146,12 +151,12 @@ export default async function handler(
         });
         // 9. create new table
         const newTableName = "Default table";
-        const table = await prisma.table.create({
+        let table = await prisma.table.create({
           data: { name: newTableName, locationId: location.id, assetUrl: "" },
         });
         await qrCodeImageUpload(table.id);
         const assetUrl = getQrCodeUrl(table.id);
-        await prisma.table.update({
+        table = await prisma.table.update({
           data: { assetUrl },
           where: { id: table.id },
         });
@@ -167,6 +172,7 @@ export default async function handler(
           tables: [table],
           disabledLocationMenuCategories: [],
           disabledLocationMenus: [],
+          orders: [],
         });
       } else {
         const companyId = dbUser.companyId;
@@ -211,6 +217,12 @@ export default async function handler(
         const tables = await prisma.table.findMany({
           where: { locationId: { in: locationIds }, isArchived: false },
         });
+        const orders = await prisma.order.findMany({
+          where: {
+            tableId: { in: tables.map((item) => item.id) },
+            isArchived: false,
+          },
+        });
         return res.status(200).json({
           locations,
           menuCategories,
@@ -222,6 +234,7 @@ export default async function handler(
           tables,
           disabledLocationMenuCategories,
           disabledLocationMenus,
+          orders,
         });
       }
     }

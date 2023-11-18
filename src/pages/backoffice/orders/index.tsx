@@ -1,7 +1,42 @@
-import React from "react";
+import OrderCard from "@/pages/component/OrderCard";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { updateOrder } from "@/store/slice/orderSlice";
+import { OrderItem } from "@/types/order";
+import { formatOrders } from "@/utils/general";
+import { Box } from "@mui/material";
+import { ORDERSTATUS } from "@prisma/client";
+import { useEffect, useState } from "react";
 
-const Orders = () => {
-  return <div>Orders</div>;
+const OrdersPage = () => {
+  const orders = useAppSelector((state) => state.order.items);
+  const addons = useAppSelector((state) => state.addon.items);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const dispatch = useAppDispatch();
+
+  const handleOrderStatuUpdate = (itemId: string, status: ORDERSTATUS) => {
+    dispatch(updateOrder({ itemId, status }));
+  };
+
+  useEffect(() => {
+    if (orders.length) {
+      setOrderItems(formatOrders(orders, addons));
+    }
+  }, [orders]);
+
+  return (
+    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      {orderItems.map((orderItem) => {
+        return (
+          <OrderCard
+            key={orderItem.itemId}
+            orderItem={orderItem}
+            isAdmin
+            handleOrderStatuUpdate={handleOrderStatuUpdate}
+          />
+        );
+      })}
+    </Box>
+  );
 };
 
-export default Orders;
+export default OrdersPage;

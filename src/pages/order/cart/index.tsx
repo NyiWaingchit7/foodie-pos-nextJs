@@ -1,11 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { removeFromCart } from "@/store/slice/cartSlice";
+import { emptyCart, removeFromCart } from "@/store/slice/cartSlice";
+import { createOrder } from "@/store/slice/orderSlice";
 import { CartItem } from "@/types/cart";
 import { getCartTotalPrice } from "@/utils/general";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
-import { Addon } from "@prisma/client";
+import { Addon, Order } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -13,6 +14,7 @@ const Cart = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const tableId = Number(router.query.tableId);
 
   useEffect(() => {
     if (!cartItems.length) {
@@ -48,22 +50,21 @@ const Cart = () => {
   };
 
   const confirmOrder = async () => {
-    /* const { locationId, tableId } = query;
-    const isValid = locationId && tableId && cartItems.length;
-    if (!isValid) return alert("Required locationId and tableId");
-    const response = await fetch(
-      `${config.apiBaseUrl}/app?locationId=${locationId}&tableId=${tableId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const isValid = tableId;
+    if (!isValid) return alert("Table Id");
+    dispatch(
+      createOrder({
+        tableId,
+        cartItems,
+        onSuccess: (orders: Order[]) => {
+          dispatch(emptyCart());
+          router.push({
+            pathname: `/order/active-order/${orders[0].orderSeq}`,
+            query: { tableId },
+          });
         },
-        body: JSON.stringify({ cartItems }),
-      }
+      })
     );
-    const orderCreated = await response.json();
-    dispatch(addOrder(orderCreated));
-    router.push({ pathname: `/order/activeOrder/${orderCreated.id}`, query }); */
   };
 
   return (
@@ -157,9 +158,7 @@ const Cart = () => {
           </Typography>
         </Box>
         <Box sx={{ mt: 3, textAlign: "center" }} onClick={confirmOrder}>
-          <Button disabled variant="contained">
-            Confirm order
-          </Button>
+          <Button variant="contained">Confirm order</Button>
         </Box>
       </Box>
     </Box>

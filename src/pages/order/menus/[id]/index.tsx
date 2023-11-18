@@ -2,11 +2,10 @@ import AddonCategories from "@/pages/component/AddonCategories";
 import QuantitySelector from "@/pages/component/QuantitySelector";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/slice/cartSlice";
-
 import { CartItem } from "@/types/cart";
-import { generateRandomId } from "@/utils/general";
 import { Box, Button } from "@mui/material";
 import { Addon } from "@prisma/client";
+import { nanoid } from "nanoid";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -69,7 +68,7 @@ const MenuDetail = () => {
   const handleAddToCart = () => {
     if (!menu) return;
     const newCartItem: CartItem = {
-      id: cartItem ? cartItem.id : generateRandomId(),
+      id: cartItem ? cartItem.id : nanoid(7),
       menu,
       addons: selectedAddons,
       quantity,
@@ -82,7 +81,7 @@ const MenuDetail = () => {
   if (!isReady || !menu) return null;
 
   return (
-    <Box sx={{ position: "relative", zIndex: 10 }}>
+    <Box sx={{ position: "relative", zIndex: 5 }}>
       <Box
         sx={{
           display: "flex",

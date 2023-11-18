@@ -104,7 +104,7 @@ const menuSlice = createSlice({
       state.items = action.payload;
     },
     addAddon: (state, action) => {
-      state.items = [...state.items, action.payload];
+      state.items = [...state.items, ...action.payload];
     },
     replaceAddon: (state, action) => {
       state.items = state.items.map((i) =>

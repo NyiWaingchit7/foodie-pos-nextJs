@@ -41,7 +41,10 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
             onClick={() => {
               console.log("click");
 
-              router.push({ pathname: "/order", query: router.query });
+              router.push({
+                pathname: "/order",
+                query: { tableId: router.query.tableId },
+              });
             }}
             sx={{
               fontSize: "40px",

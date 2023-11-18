@@ -12,6 +12,7 @@ import snackBarReducer from "../store/slice/snackbarSlice";
 import disableLocationMenuCategoryReducer from "../store/slice/disableLocationMenuCategorySlice";
 import disableLocationMenuReducer from "../store/slice/disableLocationMenu";
 import cartReducer from "../store/slice/cartSlice";
+import orderReducer from "../store/slice/orderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     disableLocationMenuCategory: disableLocationMenuCategoryReducer,
     disableLocationMenu: disableLocationMenuReducer,
     cart: cartReducer,
+    order: orderReducer,
   },
 });
 

@@ -79,6 +79,7 @@ export const updateMenu = createAsyncThunk(
       menuCategoryIds,
       isAvailable,
       locationId,
+      assetUrl,
       onSuccess,
       onError,
     } = options;
@@ -93,6 +94,7 @@ export const updateMenu = createAsyncThunk(
           menuCategoryIds,
           isAvailable,
           locationId,
+          assetUrl,
         }),
       });
       const { menu, menuCategoryMenus, disabledLocationMenus } =

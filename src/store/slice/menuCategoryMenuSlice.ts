@@ -14,7 +14,7 @@ const menuCategoryMenuSlice = createSlice({
       state.items = action.payload;
     },
     addMenuCategoryMenu: (state, action) => {
-      state.items = [...state.items, action.payload];
+      state.items = [...state.items, ...action.payload];
     },
     replaceMenuCategoryMenu: (state, action) => {
       const menuId = action.payload[0].menuId;
