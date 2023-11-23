@@ -13,12 +13,12 @@ const initialState: LocationSlice = {
 export const createNewLocation = createAsyncThunk(
   "location/createNewLocation",
   async (options: CreateNewLocationOptions, thunkApi) => {
-    const { name, address, onSuccess, onError } = options;
+    const { name, street, township, city, onSuccess, onError } = options;
     try {
-      const response = await fetch(`${config.apiBaseUrl}/locations`, {
+      const response = await fetch(`${config.apiBaseUrl}/location`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, address }),
+        body: JSON.stringify({ name, street, township, city }),
       });
       const createdLocation = await response.json();
       thunkApi.dispatch(addLocation(createdLocation));
@@ -51,6 +51,9 @@ const locationSlice = createSlice({
     },
     setSelectedLocation: (state, action: PayloadAction<Location>) => {
       state.selectedLocation = action.payload;
+      const changedLocationId = action.payload.id;
+
+      localStorage.setItem("selectedLocationId", String(changedLocationId));
     },
     addLocation: (state, action) => {
       state.items = [...state.items, action.payload];

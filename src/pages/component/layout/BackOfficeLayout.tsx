@@ -24,7 +24,7 @@ const BackOfficeLayout = ({ children }: prop) => {
   return (
     <Box>
       <Topbar />
-      <Box sx={{ display: "flex", position: "relative", zIndex: 5, flex: 1 }}>
+      <Box sx={{ display: "flex", position: "relative", zIndex: 5, flex: 1, }}>
         {data && <SideBar />}
         <Box sx={{ p: 3, width: "100%", height: "100%" }}>{children}</Box>
       </Box>

@@ -1,8 +1,5 @@
-// src/components/NewLocation.tsx
-
 import { useAppDispatch } from "@/store/hooks";
 import { createNewLocation } from "@/store/slice/locationSlice";
-
 import {
   Box,
   Button,
@@ -12,7 +9,6 @@ import {
   TextField,
 } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
-import NewLocations from "@/pages/component/NewLocations";
 
 interface Props {
   open: boolean;
@@ -20,20 +16,13 @@ interface Props {
 }
 
 const NewLocation = ({ open, setOpen }: Props) => {
-  const [newLocation, setNewLocation] = useState({ name: "", address: "" });
+  const [newLocation, setNewLocation] = useState({
+    name: "",
+    street: "",
+    township: "",
+    city: "",
+  });
   const dispatch = useAppDispatch();
-  const onSuccess = () => {
-    setOpen(false);
-  };
-  const handleCreateNewLocation = () => {
-    dispatch(
-      createNewLocation({
-        name: newLocation.name,
-        address: newLocation.address,
-        onSuccess,
-      })
-    );
-  };
 
   return (
     <Dialog
@@ -50,7 +39,7 @@ const NewLocation = ({ open, setOpen }: Props) => {
     >
       <DialogTitle>Create new location</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", mt : 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
           <TextField
             placeholder="Name"
             sx={{ mb: 2 }}
@@ -59,9 +48,24 @@ const NewLocation = ({ open, setOpen }: Props) => {
             }
           />
           <TextField
-            placeholder="Address"
+            placeholder="Street"
+            sx={{ mb: 2 }}
             onChange={(evt) =>
-              setNewLocation({ ...newLocation, address: evt.target.value })
+              setNewLocation({ ...newLocation, street: evt.target.value })
+            }
+          />
+          <TextField
+            placeholder="Township"
+            sx={{ mb: 2 }}
+            onChange={(evt) =>
+              setNewLocation({ ...newLocation, township: evt.target.value })
+            }
+          />
+          <TextField
+            placeholder="City"
+            sx={{ mb: 2 }}
+            onChange={(evt) =>
+              setNewLocation({ ...newLocation, city: evt.target.value })
             }
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
@@ -73,18 +77,24 @@ const NewLocation = ({ open, setOpen }: Props) => {
               Cancel
             </Button>
             <Button
-              disabled={!newLocation.name || !newLocation.address}
+              disabled={
+                newLocation.name &&
+                newLocation.street &&
+                newLocation.township &&
+                newLocation.city
+                  ? false
+                  : true
+              }
               variant="contained"
               sx={{ width: "fit-content" }}
-              // onClick={() => {
-              //   dispatch(
-              //     createNewLocation({
-              //       ...newLocation,
-              //       onSuccess: () => setOpen(false),
-              //     })
-              //   );
-              // }}
-              onClick={handleCreateNewLocation}
+              onClick={() => {
+                dispatch(
+                  createNewLocation({
+                    ...newLocation,
+                    onSuccess: () => setOpen(false),
+                  })
+                );
+              }}
             >
               Confirm
             </Button>

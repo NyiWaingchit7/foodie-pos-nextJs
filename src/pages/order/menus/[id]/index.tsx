@@ -81,7 +81,7 @@ const MenuDetail = () => {
   if (!isReady || !menu) return null;
 
   return (
-    <Box sx={{ position: "relative", zIndex: 5 }}>
+    <Box sx={{ position: "relative", zIndex: 10 }}>
       <Box
         sx={{
           display: "flex",

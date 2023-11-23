@@ -1,19 +1,41 @@
 import OrderCard from "@/pages/component/OrderCard";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { refreshOrder } from "@/store/slice/orderSlice";
 import { formatOrders } from "@/utils/general";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const ActiveOrder = () => {
   const router = useRouter();
   const orderSeq = router.query.id;
   const orders = useAppSelector((state) => state.order.items);
   const addons = useAppSelector((state) => state.addon.items);
-  const orderItems = formatOrders(orders, addons);
-  console.log(orderItems);
+  const menus = useAppSelector((state) => state.menu.items);
+  const tables = useAppSelector((state) => state.table.items);
+  const orderItems = formatOrders(orders, addons, menus, tables);
+  const dispatch = useAppDispatch();
+  let intervalId: number;
+
+  useEffect(() => {
+    if (orderSeq) {
+      intervalId = window.setInterval(handleRefreshOrder, 10000);
+    }
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [orderSeq]);
+
+  const handleRefreshOrder = () => {
+    dispatch(refreshOrder({ orderSeq: String(orderSeq) }));
+  };
+
+  if (!orders.length) return null;
 
   return (
-    <Box sx={{ position: "relative", top: 150, zIndex: 5 }}>
+    <Box
+      sx={{ position: "relative", top: { xs: 30, sm: 150 }, zIndex: 10, px: 2 }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -22,11 +44,14 @@ const ActiveOrder = () => {
           bgcolor: "#E8F6EF",
           borderRadius: 15,
           mx: 3,
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        OrderSeq: {orderSeq}
+        <Typography>OrderSeq: {orderSeq}</Typography>
+        <Typography>Total price: {orders[0].totalPrice}</Typography>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         {orderItems.map((orderItem) => {
           return (
             <OrderCard

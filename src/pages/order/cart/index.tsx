@@ -8,19 +8,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
 import { Addon, Order } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const tableId = Number(router.query.tableId);
-
-  useEffect(() => {
-    if (!cartItems.length) {
-      router.push({ pathname: "/order", query: router.query });
-    }
-  }, [cartItems]);
+  const dispatch = useAppDispatch();
 
   const renderAddons = (addons: Addon[]) => {
     if (!addons.length) return;
@@ -77,90 +70,89 @@ const Cart = () => {
         borderRadius: 15,
         mx: 3,
         position: "relative",
-        top: 150,
+        top: { xs: 30, sm: 150 },
         zIndex: 10,
       }}
     >
-      <Box
-        sx={{
-          width: { xs: "100%", md: "500px" },
-        }}
-      >
-        <Typography
-          color={"primary"}
-          variant="h4"
-          sx={{ textAlign: "center", mb: 3 }}
+      {!cartItems.length ? (
+        <Typography>Your cart is empty.</Typography>
+      ) : (
+        <Box
+          sx={{
+            width: { xs: "100%", md: "500px" },
+          }}
         >
-          Review your order
-        </Typography>
-        {cartItems.map((cartItem) => {
-          const { menu, addons, quantity } = cartItem;
-          return (
-            <Box key={cartItem.id}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Avatar
-                  sx={{
-                    width: 25,
-                    height: 25,
-                    mr: 1,
-                    backgroundColor: "#1B9C85",
-                  }}
-                >
-                  {quantity}
-                </Avatar>
+          <Typography
+            color={"primary"}
+            sx={{ textAlign: "center", mb: 3, fontSize: { xs: 18, sm: 22 } }}
+          >
+            Review your order
+          </Typography>
+          {cartItems.map((cartItem) => {
+            const { menu, addons, quantity } = cartItem;
+            return (
+              <Box key={cartItem.id}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Avatar
+                    sx={{
+                      width: 25,
+                      height: 25,
+                      mr: 1,
+                      backgroundColor: "#1B9C85",
+                    }}
+                  >
+                    {quantity}
+                  </Avatar>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
+                    <Typography color={"primary"}>{menu.name}</Typography>
+                    <Typography color={"primary"}>{menu.price}</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ pl: 6 }}>{renderAddons(addons)}</Box>
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    width: "100%",
+                    justifyContent: "flex-end",
+                    mb: 3,
+                    mt: 1,
                   }}
                 >
-                  <Typography variant="h6" color={"primary"}>
-                    {menu.name}
-                  </Typography>
-                  <Typography variant="h6" color={"primary"}>
-                    {menu.price}
-                  </Typography>
+                  <DeleteIcon
+                    color="primary"
+                    sx={{ mr: 2, cursor: "pointer" }}
+                    onClick={() => handleRemoveFromCart(cartItem)}
+                  />
+                  <EditIcon
+                    color="primary"
+                    sx={{ cursor: "pointer" }}
+                    onClick={() =>
+                      router.push({
+                        pathname: `menus/${menu.id}`,
+                        query: { ...router.query, cartItemId: cartItem.id },
+                      })
+                    }
+                  />
                 </Box>
               </Box>
-              <Box sx={{ pl: 6 }}>{renderAddons(addons)}</Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  mb: 3,
-                  mt: 1,
-                }}
-              >
-                <DeleteIcon
-                  color="primary"
-                  sx={{ mr: 2, cursor: "pointer" }}
-                  onClick={() => handleRemoveFromCart(cartItem)}
-                />
-                <EditIcon
-                  color="primary"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() =>
-                    router.push({
-                      pathname: `menus/${menu.id}`,
-                      query: { ...router.query, cartItemId: cartItem.id },
-                    })
-                  }
-                />
-              </Box>
-            </Box>
-          );
-        })}
-        <Divider />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Typography variant="h4" color="primary">
-            Total: {getCartTotalPrice(cartItems)}
-          </Typography>
+            );
+          })}
+          <Divider />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Typography color="primary" sx={{ fontSize: { sm: 22 } }}>
+              Total: {getCartTotalPrice(cartItems)}
+            </Typography>
+          </Box>
+          <Box sx={{ mt: 3, textAlign: "center" }} onClick={confirmOrder}>
+            <Button variant="contained">Confirm order</Button>
+          </Box>
         </Box>
-        <Box sx={{ mt: 3, textAlign: "center" }} onClick={confirmOrder}>
-          <Button variant="contained">Confirm order</Button>
-        </Box>
-      </Box>
+      )}
     </Box>
   );
 };

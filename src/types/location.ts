@@ -10,5 +10,7 @@ export interface LocationSlice {
 
 export interface CreateNewLocationOptions extends AppBaseOptions {
   name: string;
-  address: string;
+  street: string;
+  township: string;
+  city: string;
 }

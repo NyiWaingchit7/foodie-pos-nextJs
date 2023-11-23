@@ -1,12 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import { authOptions } from "../auth/[...nextauth]";
-import { getServerSession } from "next-auth";
 import { prisma } from "@/utils/db";
-
-type Data = {
-  name: string;
-};
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,26 +10,21 @@ export default async function handler(
 ) {
   const method = req.method;
   if (method === "POST") {
-    //check is user login?
     const session = await getServerSession(req, res, authOptions);
-    if (!session) return res.status(401).send("unauthorized");
-    const user = session.user;
+    if (!session) return res.status(401).send("Unauthorized.");
+    const user = session.user; // next-auth
     const email = user?.email as string;
-    //db user
     const dbUser = await prisma.user.findUnique({ where: { email } });
-    if (!dbUser) return res.status(401).send("Unauthorized");
-    //get company id
+    if (!dbUser) return res.status(401).send("Unauthorized.");
     const companyId = dbUser.companyId;
-    //data validate
-    const { name, address } = req.body;
-    const isValidate = name && address;
-    if (!isValidate) return res.status(400).send("bad request");
-    // create new location
-    const newLocation = await prisma.location.create({
-      data: { name, address, companyId },
+    const { name, street, township, city } = req.body;
+    // data validation
+    const isValid = name && street && township && city;
+    if (!isValid) return res.status(400).send("Bad request.");
+    const createdLocation = await prisma.location.create({
+      data: { name, street, township, city, companyId },
     });
-    return res.status(200).send(newLocation);
+    return res.status(200).json(createdLocation);
   }
-
-  res.status(405).send("method not allowed");
+  res.status(405).send("Method now allowed.");
 }
