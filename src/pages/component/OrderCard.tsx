@@ -11,8 +11,9 @@ interface Props {
 
 const OrderCard = ({ orderItem, isAdmin, handleOrderStatuUpdate }: Props) => {
   const addonCategories = useAppSelector((state) => state.addonCategory.items);
-
+if(!orderItem) return null;
   return (
+
     <Card
       sx={{
         display: "flex",
@@ -35,7 +36,7 @@ const OrderCard = ({ orderItem, isAdmin, handleOrderStatuUpdate }: Props) => {
           px: 1,
         }}
       >
-        <Typography>{orderItem.menu?.name}</Typography>
+        <Typography>{orderItem.menu.name}</Typography>
         <Typography>{orderItem.table.name}</Typography>
       </Box>
       <Box sx={{ px: 2 }}>
