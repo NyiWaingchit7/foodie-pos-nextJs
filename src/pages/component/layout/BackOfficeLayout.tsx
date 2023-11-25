@@ -1,10 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchAppData } from "@/store/slices/appSlice";
 import { Box } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { ReactNode, useEffect } from "react";
 import SideBar from "./Sidebar";
 import Topbar from "./Topbar";
+import { fetchAppData } from "@/store/slice/appSlice";
 
 interface Props {
   children: ReactNode;
