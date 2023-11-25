@@ -10,6 +10,7 @@ interface Props {
 }
 
 const MenuCard = ({ menu, href, isAvailable }: Props) => {
+  if(!menu) return null;
   return (
     <Link
       key={menu.id}

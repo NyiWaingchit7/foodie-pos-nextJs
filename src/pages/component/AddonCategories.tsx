@@ -14,6 +14,7 @@ const AddonCategories = ({
   selectedAddons,
   setSelectedAddons,
 }: Props) => {
+  if(!addonCategories) return null;
   return (
     <Box>
       {addonCategories.map((item) => {

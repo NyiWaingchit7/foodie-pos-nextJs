@@ -35,7 +35,7 @@ const OrderCard = ({ orderItem, isAdmin, handleOrderStatuUpdate }: Props) => {
           px: 1,
         }}
       >
-        <Typography>{orderItem.menu.name}</Typography>
+        <Typography>{orderItem.menu?.name}</Typography>
         <Typography>{orderItem.table.name}</Typography>
       </Box>
       <Box sx={{ px: 2 }}>
