@@ -17,7 +17,7 @@ const AddonCategoriesPage = () => {
           New addon category
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap",  justifyContent: { xs: "center", sm: "flex-start" }, }}>
         {addonCategories.map((item) => (
           <ItemCard
             key={item.id}

@@ -1,3 +1,4 @@
+
 import ItemCard from "@/pages/component/ItemCard";
 import NewLocation from "@/pages/component/NewLocations";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -19,14 +20,23 @@ const LocationsPage = () => {
           New location
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
         {locations.map((item) => (
           <ItemCard
             key={item.id}
             icon={<LocationOnIcon />}
             title={item.name}
             selected={item.id === selectedLocation?.id}
-            onClick={() => dispatch(setSelectedLocation(item))}
+            onClick={() => {
+              dispatch(setSelectedLocation(item));
+              localStorage.setItem("selectedLocationId", String(item.id));
+            }}
           />
         ))}
       </Box>

@@ -1,3 +1,4 @@
+
 import ItemCard from "@/pages/component/ItemCard";
 import NewTable from "@/pages/component/NewTables";
 import { useAppSelector } from "@/store/hooks";
@@ -24,7 +25,13 @@ const TablesPage = () => {
           New table
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
         {tables.map((item) => (
           <Box
             key={item.id}
@@ -37,7 +44,6 @@ const TablesPage = () => {
             <ItemCard
               href={`/backoffice/tables/${item.id}`}
               icon={<TableBarIcon fontSize="large" />}
-              key={item.id}
               title={item.name}
             />
             <Button
